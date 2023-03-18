@@ -22,7 +22,7 @@ namespace Api.Controllers
         [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Login([Bind("Email, Password, TimeToclickInSeconds")]LoginVM vm)
+        public async Task<IActionResult> Login([Bind("Email, Password, TimeOnPageInSeconds")]LoginVM vm)
         {
 
             if (ModelState.IsValid)
@@ -44,9 +44,9 @@ namespace Api.Controllers
         [HttpPost("logout")]
         [ProducesResponseType(StatusCodes.Status200OK)]
  
-        public async Task<IActionResult> Logout([Bind("LoginUserStatsId")]LogoutVM vm)
+        public async Task<IActionResult> Logout(/*[Bind("LoginUserStatsId")]LogoutVM vm*/)
         {
-            var result = await _authService.LogoutAsync(vm.LoginUserStatsId, httpContext);
+            var result = await _authService.LogoutAsync(/*vm.LoginUserStatsId,*/ httpContext);
             if (result != null)
             {
                 return CreateHttpResponse(result);

@@ -1,8 +1,10 @@
 ﻿using Dal;
 using Dal.Enums;
 using Entities;
+using Entities.DbEntities;
 using Entities.Response;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,19 +15,22 @@ namespace Bl
     public class ActivityLogger : IActivityLogger
     {
         internal GenericRepository<LoginPageStats> _pageStatsRepository;
+        internal GenericRepository<PageStatsWithUserName> _pageStatsWithNamesView;
         internal GenericRepository<LoginUserStats> _userStatsRepository;
         internal GenericRepository<UserStats_User> _userStatsUserView;
 
-           public ActivityLogger(GenericRepository<LoginPageStats> pageStatsRepository, GenericRepository<LoginUserStats> userStatsRepository, GenericRepository<UserStats_User> userStatsUserView)
+           public ActivityLogger(GenericRepository<LoginPageStats> pageStatsRepository, GenericRepository<LoginUserStats> userStatsRepository,
+               GenericRepository<UserStats_User> userStatsUserView, GenericRepository<PageStatsWithUserName> pageStatsWithNamesView)
         {
             _pageStatsRepository = pageStatsRepository;
             _userStatsRepository = userStatsRepository;
             _userStatsUserView = userStatsUserView;
+            _pageStatsWithNamesView = pageStatsWithNamesView;
         }
 
         public IEnumerable<LoginPageStats> GetLoginPageStats()
         {
-            return _pageStatsRepository.GetAll();
+            return _pageStatsWithNamesView.GetAll();
         }
 
         public IEnumerable<LoginUserStats> GetLoginUserStats()
@@ -46,9 +51,9 @@ namespace Bl
         /// <returns>LoginUserStatsId</returns>
         public int AddLoginActivity(int userId,  int timeToClickInSeconds)
         {
-               int LoginUserStatsId = AddLoginUserStats(userId);
-                AddLoginPageStats(LoginUserStatsId,  timeToClickInSeconds);
-                return LoginUserStatsId;
+               int loginUserStatsId = AddLoginUserStats(userId);
+                AddLoginPageStats(loginUserStatsId,  timeToClickInSeconds);
+                return loginUserStatsId;
         }
 
          void AddLoginPageStats(int LoginUserStatsId,  int timeToClickInSeconds)
@@ -89,7 +94,7 @@ namespace Bl
             }
         }
 
-        public async Task<bool> UpdateLogoutAsync(int loginUserStatsId)
+        public async Task<bool> UpdateLogoutAsync(string loginUserStatsId)
         {
                  Task insertPageStatsForLogout = null;
 
@@ -103,17 +108,17 @@ namespace Bl
                 return insertPageStatsForLogout.IsCompletedSuccessfully;
         }
 
-        private Task AddLogOutPageStats(int loginUserStatsId, DateTime loginTime)
+        private Task AddLogOutPageStats(string loginUserStatsId, DateTime loginTime)
         {
             try
             {
-                TimeSpan ts = loginTime - DateTime.Now;
-
+                TimeSpan ts = DateTime.Now.Subtract(loginTime);
+                int seconds = (int)Math.Ceiling(ts.TotalSeconds);
                 Dictionary<string, string> columnNamesWithValues = new()
             {
-            { nameof(LoginPageStats.LoginUserStatsId) , loginUserStatsId.ToString() },
+            { nameof(LoginPageStats.LoginUserStatsId) , loginUserStatsId},
                 { nameof(LoginPageStats.ButtonType), Buttons.Logout.ToString() },
-                { nameof(LoginPageStats.ClickedAfterInSeconds),  ts.Seconds.ToString() }
+                { nameof(LoginPageStats.ClickedAfterInSeconds),   seconds.ToString() }
             };
                 _pageStatsRepository.ExecuteSqlRawSP(StoredProcedures.InsertLoginPageStats.ToString(), columnNamesWithValues);
                 return Task.CompletedTask;
@@ -125,7 +130,7 @@ namespace Bl
        
         }
 
-        private Task<LoginUserStats> UpdateLogOutInLoginUserStats(int loginUserStatsId)
+        private Task<LoginUserStats> UpdateLogOutInLoginUserStats(string loginUserStatsId)
         {
             try
             {
@@ -142,11 +147,11 @@ namespace Bl
 
         }
 
-        private LoginUserStats GetLoginUserStatsById(int loginUserStatsId)
+        private LoginUserStats GetLoginUserStatsById(string loginUserStatsId)
         {
             Dictionary<string, string> columnNamesAndParams = new Dictionary<string, string>()
                         {
-                            {nameof(LoginUserStats.Id), loginUserStatsId.ToString()},
+                            {nameof(LoginUserStats.Id), loginUserStatsId},
                         };
            return _userStatsRepository.GetOneFromSqlRaw(StoredProcedures.SelectLoginUserStatsById.ToString(), columnNamesAndParams);
         }

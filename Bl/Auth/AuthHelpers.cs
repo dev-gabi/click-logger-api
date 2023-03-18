@@ -1,5 +1,6 @@
 ﻿using Entities;
 using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using static Bl.Enums;
@@ -23,6 +24,11 @@ namespace Bl.Auth
             context.Items.Remove(AuthContextItems.UserId.ToString());
             context.Items.Remove(AuthContextItems.LoginUserStatsId.ToString());
             context.Items.Remove(AuthContextItems.Email.ToString());
+        }
+
+        internal static string GetLoginUserStatsIdFromContext(HttpContext context)
+        {
+            return context.Items[AuthContextItems.LoginUserStatsId.ToString()].ToString();
         }
     }
 }

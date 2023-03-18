@@ -400,4 +400,9 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+#secrets
 /Api/appsettings.production.json
+
+#client project
+/Client

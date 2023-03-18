@@ -9,7 +9,7 @@ namespace Bl
     {
         public IEnumerable<LoginPageStats> GetLoginPageStats();
         public int AddLoginActivity(int userId,  int timeToClickInSeconds);
-        public Task<bool> UpdateLogoutAsync(int loginUserStatsId);
+        public Task<bool> UpdateLogoutAsync(string loginUserStatsId);
         public IEnumerable<UserStats_User> GetLessThanFiveMinutesSessionTime();
         public Task<DeleteResponse> DeleteLoginUserStats(int id);
         public Task<DeleteResponse>  DeleteLoginPageStats(int id);

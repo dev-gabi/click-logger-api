@@ -38,7 +38,7 @@ namespace Bl.Auth
                 User user = await GetUserFromDB(vm);
                 if (user != null)
                 {
-                    int loginUserStatsId = _logger.AddLoginActivity(user.Id,  vm.TimetToClickInSeconds);
+                    int loginUserStatsId = _logger.AddLoginActivity(user.Id,  vm.TimeOnPageInSeconds);
 
                     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfig.EncKey));
                     var token = new JwtSecurityToken(
@@ -70,12 +70,13 @@ namespace Bl.Auth
                 );
         }
 
-        public async Task<LogoutResponse> LogoutAsync(int loginPageStatsId, HttpContext httpContext)
+        public async Task<LogoutResponse> LogoutAsync(/*int loginPageStatsId, */HttpContext httpContext)
         {
             try
             {
+                string loginUserStatsId = AuthHelpers.GetLoginUserStatsIdFromContext(httpContext);
                 AuthHelpers.RemoveJWTContextItems(httpContext);
-                bool isLogged = await _logger.UpdateLogoutAsync(loginPageStatsId);
+                bool isLogged = await _logger.UpdateLogoutAsync(loginUserStatsId);
                 if (isLogged)
                 {
                     return new LogoutResponse() { IsSuccess = true, StatusCode = 200, Message = "User loged out", StatusCodeTitle = "Ok" };

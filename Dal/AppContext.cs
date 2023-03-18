@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Entities.DbEntities;
 using Microsoft.EntityFrameworkCore;
 using System;
 
@@ -21,7 +22,8 @@ namespace Dal
            modelBuilder.Entity<LoginUserStats>().ToTable("LoginUserStats");
            modelBuilder.Entity<LoginPageStats>().ToTable("LoginPageStats");
            modelBuilder.Entity<UserStats_User>().ToView("UserStats_User").HasNoKey();
-           
+            modelBuilder.Entity<PageStatsWithUserName>().ToView("SelectPageStatsWithUserName");
+
 
         }
 

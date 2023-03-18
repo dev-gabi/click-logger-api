@@ -8,6 +8,6 @@ namespace Bl.Auth
     public interface IAuthService
     {
         public Task<LoginResponse> LoginAsync(LoginVM vm);
-        public Task<LogoutResponse> LogoutAsync(int loginPageStatsId, HttpContext context);
+        public Task<LogoutResponse> LogoutAsync(/*int loginPageStatsId,*/ HttpContext context);
     }
 }

@@ -8,6 +8,7 @@
         SelectLoginUserStatsById,
         SelectLoginPageStatsById,
         SelectLoginPageStatsByLoginUserStatsId,
+     
         UpdateLoginUserStats,
         DeleteFromLoginPageStats,
         DeleteFromLoginUserStats
@@ -17,7 +18,8 @@
     {
         SelectAllLoginPageStats,
         UserStats_User,
-        SelectAllLoginUserStats
+        SelectAllLoginUserStats,
+        SelectPageStatsWithUserName
     }
 
 

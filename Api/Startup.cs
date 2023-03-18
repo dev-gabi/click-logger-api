@@ -35,7 +35,7 @@ namespace ClickLoggerSql
 
             services.AddCors(options =>
             {
-                options.AddPolicy(CorsOrigins,
+                options.AddPolicy(name: CorsOrigins,
                                   builder =>
                                   {
                                       if (_env.IsDevelopment())
@@ -47,6 +47,7 @@ namespace ClickLoggerSql
                                           builder.WithOrigins("http://coolgift-001-site9.gtempurl.com/");
 
                                       }
+                         
                                       builder.WithHeaders("Access-Control-Allow-Headers", "Access-Control-Allow-Origin", "Content-Type", "Authorization")
                                             .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
                                   });
@@ -100,11 +101,11 @@ namespace ClickLoggerSql
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ClickLoggerSql v1"));
             }
 
-            app.UseHttpsRedirection();
+          //  app.UseHttpsRedirection();
 
             app.UseRouting();
 
-            app.UseCors(CorsOrigins);
+           app.UseCors(CorsOrigins);
 
             app.UseMiddleware<JWTMiddleware>();
             app.UseAuthentication();

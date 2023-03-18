@@ -1,7 +1,10 @@
 ﻿using Bl;
+using Entities;
 using Entities.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Api.Controllers
 {   
@@ -17,15 +20,9 @@ namespace Api.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetLoginPageStats()
+        public IEnumerable<LoginPageStats> GetLoginPageStats()
         {
-            var result = _activityLogger.GetLoginPageStats();
-            if (result != null)
-            {
-
-                return CreateHttpResponse(result.ConvertToLoginPageStatsResponse());
-            }
-            return NotFound();
+            return _activityLogger.GetLoginPageStats();
         }
 
         [HttpDelete]

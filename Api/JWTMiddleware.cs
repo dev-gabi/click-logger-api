@@ -1,14 +1,13 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Entities.Configutation;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
-using System;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using Entities.Configutation;
-using Entities;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Api
 {

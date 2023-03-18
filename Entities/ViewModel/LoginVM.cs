@@ -11,9 +11,10 @@ namespace Entities.ViewModel
         public string Email { get; set; }
         [Required]
         [MaxLength(20, ErrorMessage = "Password shold not exceed 20 characters")]
+        [MinLength(4, ErrorMessage = "Password should be at least 4 characthers")]
         public string Password { get; set; }
 
         [Required]
-        public int TimetToClickInSeconds { get; set; }
+        public int TimeOnPageInSeconds { get; set; }
     }
 }
