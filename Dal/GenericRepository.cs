@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
 
 namespace Dal
 {
@@ -37,6 +38,7 @@ namespace Dal
             IEnumerable<SqlParameter> sqlParameters = GetSqlParameterList(colomnNamesWithValues);
             return dbSet.FromSqlRaw(command, sqlParameters.ToArray()).AsEnumerable<TEntity>().ToList();
         }
+
         public List<TEntity> GetManyFromSqlRaw(string viewName)
         {
             return dbSet.FromSqlRaw(viewName).AsEnumerable<TEntity>().ToList();

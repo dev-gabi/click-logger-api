@@ -1,8 +1,11 @@
 ﻿using Bl;
+using Entities;
 using Entities.Response;
+using Entities.UiEntities;
 using Entities.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace Api.Controllers
 {   
@@ -19,16 +22,21 @@ namespace Api.Controllers
 
 
         [HttpGet("GetAll")]
-        public IActionResult GetAll()
-        {  
-            var result = _activityLogger.GetLoginUserStats();
-            if (result != null)
-            {
-                return CreateHttpResponse(result.ConvertToLoginUserstatsResponse());
-            }
+        public IEnumerable<LoginUserStats> GetAll()
+        {  //todo: return LoginUserStatsResponse
+            return _activityLogger.GetLoginUserStats();
 
-            return CreateHttpResponse( new ApiResponse() { Error = "Some thing went wrong" }  );
         }
+
+        [HttpPost("Name")]
+        public IEnumerable<LoginUserStatsWithUserName> GetByName([Bind("Name")] UserStatsByNameVM vm)
+        {//todo: return LoginUserStatsResponse
+            if (ModelState.IsValid)
+            {
+                return _activityLogger.GetLoginUserStatsByName(vm.Name);
+            }
+            return null;
+          }
 
         [HttpGet("LessThanFiveMinutesSessions")]
         public IActionResult GetLessThanFiveMinutesSessions()

@@ -2,7 +2,7 @@
 
 namespace Entities
 {
-    public class LoginUserStats: IGenericEntity
+    public class LoginUserStats: IGenericEntity, IUserStats
     {
         public int Id { get; set; }
         public int UserId { get; set; }
@@ -13,6 +13,6 @@ namespace Entities
         public int? SessionInMinutes { get; set; }
 #nullable disable
         
-     //   public virtual User User { get; set; }
+        public virtual User User { get; set; }
     }
 }

@@ -3,8 +3,8 @@ using Dal.Enums;
 using Entities;
 using Entities.DbEntities;
 using Entities.Response;
+using Entities.UiEntities;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,14 +18,16 @@ namespace Bl
         internal GenericRepository<PageStatsWithUserName> _pageStatsWithNamesView;
         internal GenericRepository<LoginUserStats> _userStatsRepository;
         internal GenericRepository<UserStats_User> _userStatsUserView;
+        internal GenericRepository<LoginUserStatsWithUserName> _userStatsWithUserNameFunction;
 
-           public ActivityLogger(GenericRepository<LoginPageStats> pageStatsRepository, GenericRepository<LoginUserStats> userStatsRepository,
-               GenericRepository<UserStats_User> userStatsUserView, GenericRepository<PageStatsWithUserName> pageStatsWithNamesView)
+        public ActivityLogger(GenericRepository<LoginPageStats> pageStatsRepository, GenericRepository<LoginUserStats> userStatsRepository,
+            GenericRepository<LoginUserStatsWithUserName> userStatsWithUserNameFunction, GenericRepository<UserStats_User> userStatsUserView, GenericRepository<PageStatsWithUserName> pageStatsWithNamesView)
         {
             _pageStatsRepository = pageStatsRepository;
             _userStatsRepository = userStatsRepository;
             _userStatsUserView = userStatsUserView;
             _pageStatsWithNamesView = pageStatsWithNamesView;
+            _userStatsWithUserNameFunction = userStatsWithUserNameFunction;
         }
 
         public IEnumerable<LoginPageStats> GetLoginPageStats()
@@ -38,7 +40,7 @@ namespace Bl
             return _userStatsRepository.GetAll();
         }
         public IEnumerable<UserStats_User> GetLessThanFiveMinutesSessionTime()
-        {  
+        {
             return _userStatsUserView.GetAll();
         }
 
@@ -49,14 +51,14 @@ namespace Bl
         /// <param name="buttonType"></param>
         /// <param name="timeToClickInSeconds"></param>
         /// <returns>LoginUserStatsId</returns>
-        public int AddLoginActivity(int userId,  int timeToClickInSeconds)
+        public int AddLoginActivity(int userId, int timeToClickInSeconds)
         {
-               int loginUserStatsId = AddLoginUserStats(userId);
-                AddLoginPageStats(loginUserStatsId,  timeToClickInSeconds);
-                return loginUserStatsId;
+            int loginUserStatsId = AddLoginUserStats(userId);
+            AddLoginPageStats(loginUserStatsId, timeToClickInSeconds);
+            return loginUserStatsId;
         }
 
-         void AddLoginPageStats(int LoginUserStatsId,  int timeToClickInSeconds)
+        void AddLoginPageStats(int LoginUserStatsId, int timeToClickInSeconds)
         {
             try
             {
@@ -75,7 +77,7 @@ namespace Bl
 
         }
 
-        int  AddLoginUserStats(int userId)
+        int AddLoginUserStats(int userId)
         {
             try
             {
@@ -96,16 +98,16 @@ namespace Bl
 
         public async Task<bool> UpdateLogoutAsync(string loginUserStatsId)
         {
-                 Task insertPageStatsForLogout = null;
+            Task insertPageStatsForLogout = null;
 
-                LoginUserStats  updatedUserStats = await  UpdateLogOutInLoginUserStats(loginUserStatsId);
-                if (updatedUserStats != null)
-                {
-                     insertPageStatsForLogout =  AddLogOutPageStats(loginUserStatsId, updatedUserStats.LoginTime);
-                     insertPageStatsForLogout.Wait();
-                }
-          
-                return insertPageStatsForLogout.IsCompletedSuccessfully;
+            LoginUserStats updatedUserStats = await UpdateLogOutInLoginUserStats(loginUserStatsId);
+            if (updatedUserStats != null)
+            {
+                insertPageStatsForLogout = AddLogOutPageStats(loginUserStatsId, updatedUserStats.LoginTime);
+                insertPageStatsForLogout.Wait();
+            }
+
+            return insertPageStatsForLogout.IsCompletedSuccessfully;
         }
 
         private Task AddLogOutPageStats(string loginUserStatsId, DateTime loginTime)
@@ -127,7 +129,7 @@ namespace Bl
             {
                 return Task.FromException(x);
             }
-       
+
         }
 
         private Task<LoginUserStats> UpdateLogOutInLoginUserStats(string loginUserStatsId)
@@ -153,15 +155,15 @@ namespace Bl
                         {
                             {nameof(LoginUserStats.Id), loginUserStatsId},
                         };
-           return _userStatsRepository.GetOneFromSqlRaw(StoredProcedures.SelectLoginUserStatsById.ToString(), columnNamesAndParams);
+            return _userStatsRepository.GetOneFromSqlRaw(StoredProcedures.SelectLoginUserStatsById.ToString(), columnNamesAndParams);
         }
 
         private Dictionary<string, string> GetLoginUserStatsDictionaryForLogout(LoginUserStats stats)
         {
-            TimeSpan ts = DateTime.Now.Subtract(stats.LoginTime) ;
+            TimeSpan ts = DateTime.Now.Subtract(stats.LoginTime);
             stats.SessionInMinutes = (int)ts.TotalMinutes;
 
-            return new Dictionary<string, string> ()
+            return new Dictionary<string, string>()
                         {
                             { nameof(LoginUserStats.Id), stats.Id.ToString()},
                             {nameof(LoginUserStats.LogoutTime),  DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss")},
@@ -169,7 +171,7 @@ namespace Bl
                         };
         }
 
-        public  Task<DeleteResponse> DeleteLoginPageStats(int id)
+        public Task<DeleteResponse> DeleteLoginPageStats(int id)
         {
             try
             {
@@ -179,7 +181,7 @@ namespace Bl
             catch (Exception x)
             {
                 return CreateDeleteResponse(id, $"An error has occured while tring to delete object {id} from LoginPageStats table");
-             
+
             }
         }
 
@@ -194,7 +196,7 @@ namespace Bl
             {
                 return CreateDeleteResponse(id, $"An error has occured while tring to delete object {id} from LoginUserStats table");
             }
-       
+
         }
 
         private Task<DeleteResponse> CreateDeleteResponse(int id, string error = null)
@@ -208,6 +210,16 @@ namespace Bl
                 StatusCodeTitle = "Ok",
                 Error = error
             });
+        }
+
+        public IEnumerable<LoginUserStatsWithUserName> GetLoginUserStatsByName(string name)
+        {
+            Dictionary<string, string> columnNamesAndParams = new Dictionary<string, string>()
+                        {
+                            {nameof(User.UserName), name},
+                        };
+
+                return _userStatsWithUserNameFunction.GetManyFromSqlRaw(StoredProcedures.SelectLoginUserStatsByUserName.ToString(), columnNamesAndParams); 
         }
     }
 }

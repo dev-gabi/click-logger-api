@@ -8,7 +8,7 @@
         SelectLoginUserStatsById,
         SelectLoginPageStatsById,
         SelectLoginPageStatsByLoginUserStatsId,
-     
+        SelectLoginUserStatsByUserName,
         UpdateLoginUserStats,
         DeleteFromLoginPageStats,
         DeleteFromLoginUserStats
@@ -19,7 +19,12 @@
         SelectAllLoginPageStats,
         UserStats_User,
         SelectAllLoginUserStats,
-        SelectPageStatsWithUserName
+        SelectPageStatsWithUserName,
+     
+    }
+    public enum Functions
+    {
+        SelectLoginUserStatsByUserNameFunction
     }
 
 

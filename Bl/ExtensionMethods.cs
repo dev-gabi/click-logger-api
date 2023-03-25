@@ -1,6 +1,7 @@
 ﻿using Entities;
 using Entities.Response;
 using Entities.Response.Activity;
+using Entities.UiEntities;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 
@@ -59,7 +60,7 @@ namespace Bl
             };
         }
 
-        public static LoginUserStatsResponse ConvertToLoginUserstatsResponse(this IEnumerable<LoginUserStats> stats)
+        public static LoginUserStatsResponse ConvertToLoginUserstatsResponse(this IEnumerable<LoginUserStatsWithUserName> stats)
         {
             return new LoginUserStatsResponse()
             {
