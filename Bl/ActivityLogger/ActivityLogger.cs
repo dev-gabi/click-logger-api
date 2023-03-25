@@ -214,12 +214,13 @@ namespace Bl
 
         public IEnumerable<LoginUserStatsWithUserName> GetLoginUserStatsByName(string name)
         {
+
             Dictionary<string, string> columnNamesAndParams = new Dictionary<string, string>()
                         {
                             {nameof(User.UserName), name},
                         };
 
-                return _userStatsWithUserNameFunction.GetManyFromSqlRaw(StoredProcedures.SelectLoginUserStatsByUserName.ToString(), columnNamesAndParams); 
+            return _userStatsWithUserNameFunction.GetManyFromSqlRaw(StoredProcedures.SelectLoginUserStatsByUserName.ToString(), columnNamesAndParams);
         }
     }
 }
