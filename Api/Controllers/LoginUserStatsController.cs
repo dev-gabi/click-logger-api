@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
 namespace Api.Controllers
-{   
+{
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
@@ -21,37 +21,45 @@ namespace Api.Controllers
         }
 
 
-        [HttpGet("GetAll")]
-        public IEnumerable<LoginUserStats> GetAll()
-        {  //todo: return LoginUserStatsResponse
-            return _activityLogger.GetLoginUserStats();
-
+        [HttpGet]
+        public IActionResult Get()
+        {  
+             var result = _activityLogger.GetLoginUserStats();
+            if (result != null)
+            {
+                return CreateHttpResponse(result.ConvertToLoginUserStatsResponse());
+            }
+            return CreateHttpResponse(new ApiResponse() { Error = "Some thing went wrong" });
         }
 
+
         [HttpPost("Name")]
-        public IEnumerable<LoginUserStatsWithUserName> GetByName([Bind("Name")] UserStatsByNameVM vm)
-        {//todo: return LoginUserStatsResponse
-            if (ModelState.IsValid)
+        public IActionResult GetByName([Bind("Name")] UserStatsByNameVM vm)
+        {
+            var result = _activityLogger.GetLoginUserStatsByName(vm.Name);
+            if (result != null)
             {
-                return _activityLogger.GetLoginUserStatsByName(vm.Name);
+              
+                return CreateHttpResponse(result.ConvertToLoginUserStatsResponse());
             }
             return null;
-          }
+        }
 
-        [HttpGet("LessThanFiveMinutesSessions")]
-        public IActionResult GetLessThanFiveMinutesSessions()
-        {   //gets a view from database
-            var result = _activityLogger.GetLessThanFiveMinutesSessionTime();
+        [HttpGet("SessionsLowerThanFive")]
+        public IActionResult GetSessionsLowerThanFive()
+        {
+            var result = _activityLogger.GetSessionTimeLowerThanFive();
             if (result != null)
             {
                 return CreateHttpResponse(result.ConvertToUserStats_UserResponse());
             }
 
-            return CreateHttpResponse(   new ApiResponse() { Error = "Some thing went wrong" }      );
+            return CreateHttpResponse(new ApiResponse() { Error = "Some thing went wrong" });
         }
 
         [HttpDelete]
-        public IActionResult DeleteLoginUserStats([Bind("Id")]DeleteVM vm) {
+        public IActionResult Delete([Bind("Id")]DeleteVM vm)
+        {
             var result = _activityLogger.DeleteLoginUserStats(vm.Id).Result;
 
             return CreateHttpResponse(result);

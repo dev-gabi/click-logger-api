@@ -14,7 +14,7 @@ namespace Dal
         public DbSet<User> Users;
         public DbSet<LoginUserStats> LoginUserStats;
         public DbSet<LoginPageStats> LoginPageStats;
-        public DbSet<LoginUserStatsWithUserName> LoginUserStatsWithUserName;
+        public DbSet<LoginUserStatsWithUserNameSP> LoginUserStatsWithUserNameFunction;
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -22,14 +22,15 @@ namespace Dal
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<User>().ToTable("Users");
             modelBuilder.Entity<LoginUserStats>().ToTable("LoginUserStats");                                                                                      //see comment below
-            modelBuilder.Entity<LoginUserStatsWithUserName>().ToFunction("SelectLoginUserStatsByUserNameFunction");     //see comment below
+            modelBuilder.Entity<LoginUserStatsWithUserNameSP>().ToFunction("SelectLoginUserStatsByUserNameFunction"); //see comment below
+            modelBuilder.Entity<LoginUserStatsWithUserNameView>().ToView("SelectUserStatsWithUserName");                         //see comment below
             modelBuilder.Entity<LoginPageStats>().ToTable("LoginPageStats");
-            modelBuilder.Entity<UserStats_User>().ToView("UserStats_User").HasNoKey();
+            modelBuilder.Entity<SessionTimeLowerThanFive>().ToView("UserStats_User").HasNoKey();
             modelBuilder.Entity<PageStatsWithUserName>().ToView("SelectPageStatsWithUserName");
         }
         //comment
-        //if LoginUserStatsWithUserName is derived from LoginUserStats 
+        //if LoginUserStatsWithUserNameSP is derived from LoginUserStats 
         //an exception will be thrown when try to use SelectLoginUserStatsByUserName procedure
-        //derived entity can't directly be mapped to a function, tha't is why both LoginUserStats and LoginUserStatsWithUserName implements IUserStats instead of inheritance
+        //derived entity can't directly be mapped to a function, tha't is why both LoginUserStats and LoginUserStatsWithUserNameSP implements IUserStats instead of inheritance
     }
 }

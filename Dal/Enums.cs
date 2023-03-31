@@ -20,11 +20,8 @@
         UserStats_User,
         SelectAllLoginUserStats,
         SelectPageStatsWithUserName,
-     
-    }
-    public enum Functions
-    {
-        SelectLoginUserStatsByUserNameFunction
+        SelectUserStatsWithUserName
+
     }
 
 

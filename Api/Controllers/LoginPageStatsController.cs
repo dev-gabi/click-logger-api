@@ -27,7 +27,7 @@ namespace Api.Controllers
 
         [HttpDelete]
         public IActionResult DeleteLoginPageStats([Bind("Id")] DeleteVM vm)
-        {
+        { //todo: test in client
             var result = _activityLogger.DeleteLoginUserStats(vm.Id).Result;
 
             return CreateHttpResponse(result);

@@ -4,7 +4,7 @@ namespace Entities.UiEntities
 {
 
 
-    public class LoginUserStatsWithUserName : IUserStats, IGenericEntity
+    public abstract class LoginUserStatsWithUserName : IUserStats, IGenericEntity
     {
         public string UserName{ get; set; }
         public int Id { get; set; }

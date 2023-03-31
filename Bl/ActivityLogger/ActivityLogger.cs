@@ -17,17 +17,21 @@ namespace Bl
         internal GenericRepository<LoginPageStats> _pageStatsRepository;
         internal GenericRepository<PageStatsWithUserName> _pageStatsWithNamesView;
         internal GenericRepository<LoginUserStats> _userStatsRepository;
-        internal GenericRepository<UserStats_User> _userStatsUserView;
-        internal GenericRepository<LoginUserStatsWithUserName> _userStatsWithUserNameFunction;
+        internal GenericRepository<SessionTimeLowerThanFive> _SessionTimeLowerThanFiveView;
+        internal GenericRepository<LoginUserStatsWithUserNameSP> _userStatsWithUserNameSP;
+        internal GenericRepository<LoginUserStatsWithUserNameView> _userStatsWithUserNameView;
+
 
         public ActivityLogger(GenericRepository<LoginPageStats> pageStatsRepository, GenericRepository<LoginUserStats> userStatsRepository,
-            GenericRepository<LoginUserStatsWithUserName> userStatsWithUserNameFunction, GenericRepository<UserStats_User> userStatsUserView, GenericRepository<PageStatsWithUserName> pageStatsWithNamesView)
+            GenericRepository<LoginUserStatsWithUserNameSP> userStatsWithUserNameSP, GenericRepository<SessionTimeLowerThanFive> SessionTimeLowerThanFiveView,
+            GenericRepository<PageStatsWithUserName> pageStatsWithNamesView, GenericRepository<LoginUserStatsWithUserNameView> userStatsWithUserNameView)
         {
             _pageStatsRepository = pageStatsRepository;
             _userStatsRepository = userStatsRepository;
-            _userStatsUserView = userStatsUserView;
+            _SessionTimeLowerThanFiveView = SessionTimeLowerThanFiveView;
             _pageStatsWithNamesView = pageStatsWithNamesView;
-            _userStatsWithUserNameFunction = userStatsWithUserNameFunction;
+            _userStatsWithUserNameSP = userStatsWithUserNameSP;
+            _userStatsWithUserNameView = userStatsWithUserNameView;
         }
 
         public IEnumerable<LoginPageStats> GetLoginPageStats()
@@ -35,13 +39,14 @@ namespace Bl
             return _pageStatsWithNamesView.GetAll();
         }
 
-        public IEnumerable<LoginUserStats> GetLoginUserStats()
+        public IEnumerable<LoginUserStatsWithUserNameView> GetLoginUserStats()
         {
-            return _userStatsRepository.GetAll();
+            return _userStatsWithUserNameView.GetAll();
         }
-        public IEnumerable<UserStats_User> GetLessThanFiveMinutesSessionTime()
+
+        public IEnumerable<SessionTimeLowerThanFive> GetSessionTimeLowerThanFive()
         {
-            return _userStatsUserView.GetAll();
+            return _SessionTimeLowerThanFiveView.GetAll();
         }
 
         /// <summary>
@@ -212,7 +217,7 @@ namespace Bl
             });
         }
 
-        public IEnumerable<LoginUserStatsWithUserName> GetLoginUserStatsByName(string name)
+        public IEnumerable<LoginUserStatsWithUserNameSP> GetLoginUserStatsByName(string name)
         {
 
             Dictionary<string, string> columnNamesAndParams = new Dictionary<string, string>()
@@ -220,7 +225,7 @@ namespace Bl
                             {nameof(User.UserName), name},
                         };
 
-            return _userStatsWithUserNameFunction.GetManyFromSqlRaw(StoredProcedures.SelectLoginUserStatsByUserName.ToString(), columnNamesAndParams);
+            return _userStatsWithUserNameSP.GetManyFromSqlRaw(StoredProcedures.SelectLoginUserStatsByUserName.ToString(), columnNamesAndParams);
         }
     }
 }

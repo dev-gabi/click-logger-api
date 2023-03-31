@@ -105,7 +105,7 @@ namespace ClickLoggerSql
 
             app.UseRouting();
 
-           app.UseCors(CorsOrigins);
+          app.UseCors(CorsOrigins);
 
             app.UseMiddleware<JWTMiddleware>();
             app.UseAuthentication();

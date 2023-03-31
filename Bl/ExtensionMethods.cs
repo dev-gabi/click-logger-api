@@ -37,7 +37,7 @@ namespace Bl
             };
         }
 
-        public static LoginUserStats_UserResponse ConvertToUserStats_UserResponse(this IEnumerable<UserStats_User> stats)
+        public static LoginUserStats_UserResponse ConvertToUserStats_UserResponse(this IEnumerable<SessionTimeLowerThanFive> stats)
         {
             return new LoginUserStats_UserResponse()
             {
@@ -60,7 +60,7 @@ namespace Bl
             };
         }
 
-        public static LoginUserStatsResponse ConvertToLoginUserstatsResponse(this IEnumerable<LoginUserStatsWithUserName> stats)
+        public static LoginUserStatsResponse ConvertToLoginUserStatsResponse(this IEnumerable<LoginUserStatsWithUserName> stats)
         {
             return new LoginUserStatsResponse()
             {
