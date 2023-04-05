@@ -3,11 +3,10 @@ using Entities;
 using Entities.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Api.Controllers
-{   
+{
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
@@ -27,8 +26,8 @@ namespace Api.Controllers
 
         [HttpDelete]
         public IActionResult DeleteLoginPageStats([Bind("Id")] DeleteVM vm)
-        { //todo: test in client
-            var result = _activityLogger.DeleteLoginUserStats(vm.Id).Result;
+        { 
+            var result = _activityLogger.DeleteLoginPageStats(vm.Id).Result;
 
             return CreateHttpResponse(result);
         }
