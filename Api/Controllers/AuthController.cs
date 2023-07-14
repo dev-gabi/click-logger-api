@@ -18,7 +18,12 @@ namespace Api.Controllers
         {
             _authService = authService;
         }
-
+        [Route("/api/test")]
+        [HttpGet]
+        public string Test()
+        {
+            return "Test is good";
+        }
         [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

@@ -44,7 +44,7 @@ namespace ClickLoggerSql
                                       }
                                       else
                                       {
-                                          builder.WithOrigins("http://coolgift-001-site9.gtempurl.com/");
+                                          builder.WithOrigins("http://coolgift-001-site2.gtempurl.com",  "https://click-logger.xyz");
 
                                       }
                          
